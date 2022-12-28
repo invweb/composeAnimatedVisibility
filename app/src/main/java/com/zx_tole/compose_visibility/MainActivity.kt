@@ -1,6 +1,7 @@
 package com.zx_tole.compose_visibility
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.*
@@ -13,27 +14,70 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.zx_tole.compose_visibility.ui.theme.Compose_visibilityTheme
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 private val visibility = mutableStateOf(false)
 
 class MainActivity : ComponentActivity() {
+    private val ctx = this
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             Compose_visibilityTheme {
-                Row {
-                    Surface(
-                        modifier = Modifier
-                            .width(100.dp)
-                            .height(50.dp)
-                    ) {
-                        CreateButton("Android") {
-                            visibility.value = !visibility.value
+                Column {
+                    Row {
+                        Surface(
+                            modifier = Modifier
+                                .padding(8.dp)
+                                .width(170.dp)
+                                .height(50.dp)
+                        ) {
+                            CreateButton("view AnimatedVisibility") {
+                                visibility.value = !visibility.value
+                            }
+                        }
+
+                        Column {
+                            HelloAnim("test visibility animation")
                         }
                     }
-
-                    Column {
-                        HelloAnim("test visibility animation")
+                    Row(
+                        modifier = Modifier
+                            .padding(8.dp)
+                    ) {
+                        Surface{
+                            CreateButton("AlertDialog") {
+                                visibility.value = !visibility.value
+                                setContent {
+                                    val openDialog = remember { mutableStateOf(true) }
+                                    if (openDialog.value) AlertDialog(
+                                        title = { Text(text = "Подтверждение действия") },
+                                        text = { Text("Вы действительно хотите" +
+                                                " совершить действие?") },
+                                        onDismissRequest = {
+                                        },
+                                        confirmButton = {
+                                            TextButton(onClick = {
+                                                Toast.makeText(
+                                                    ctx,
+                                                    "test",
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+                                            })
+                                            { Text(text = "OK") }
+                                        },
+                                        dismissButton = {
+                                            TextButton(onClick = {
+                                                openDialog.value = false
+                                            })
+                                            { Text(text = "Cancel") }
+                                        }
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
             }
