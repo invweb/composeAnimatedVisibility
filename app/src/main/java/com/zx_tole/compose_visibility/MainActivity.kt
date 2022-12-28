@@ -28,10 +28,13 @@ class MainActivity : ComponentActivity() {
                             .height(50.dp)
                     ) {
                         CreateButton("Android") {
-                            visibility.value = true
+                            visibility.value = !visibility.value
                         }
                     }
-                    HelloAnim("test visibility animation")
+
+                    Column {
+                        HelloAnim("test visibility animation")
+                    }
                 }
             }
         }
